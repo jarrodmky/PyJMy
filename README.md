@@ -1,0 +1,2 @@
+# PyJMy
+Simple python utilities
