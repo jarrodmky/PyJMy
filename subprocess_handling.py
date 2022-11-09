@@ -1,4 +1,4 @@
-from PyJMy.debug import debug_message
+from .debug import debug_message
 
 import typing
 from subprocess import run

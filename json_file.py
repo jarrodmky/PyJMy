@@ -1,8 +1,8 @@
 import json
 import typing
 
-from PyJMy.utf8_file import utf8_reader, utf8_writer
-from PyJMy.debug import debug_message
+from .utf8_file import utf8_reader, utf8_writer
+from .debug import debug_message
 
 class json_internal :
 
