@@ -1,5 +1,6 @@
 import json
 import typing
+from pathlib import Path as FilePath
 
 from .utf8_file import utf8_reader, utf8_writer
 from .debug import debug_message
@@ -54,12 +55,12 @@ class json_encoder(json.JSONEncoder) :
 		
 		return super(json_encoder, self).default(object_instance)
 
-def json_register_writeable(some_type) :
+def json_register_writeable(some_type : typing.Type) -> None :
 	assert some_type not in json_encoder.serializable_types, "Tried to reregister a " + str(some_type)
 	debug_message(f"Registering {some_type} as serializable")
 	json_encoder.serializable_types.add(some_type)
 
-def json_write(file_path, something) :
+def json_write(file_path : FilePath, something : typing.Any) -> None :
 	with utf8_writer(file_path) as write_file :
 		json.dump(something, write_file, cls=json_encoder)
 
@@ -71,7 +72,7 @@ class json_decoder(json.JSONDecoder) :
 	def __init__(self, *args, **kwargs) :
 		json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
 
-	def object_hook(self, object_dictionary) :
+	def object_hook(self, object_dictionary : typing.Any) -> None | typing.Any :
 		found_constructor = False
 		made_object = None
 		for type_of in json_decoder.deserializable_types :
@@ -88,12 +89,12 @@ class json_decoder(json.JSONDecoder) :
 		else :
 			return object_dictionary
 
-def json_register_readable(some_type) :
+def json_register_readable(some_type : typing.Type) -> None :
 	assert some_type not in json_decoder.deserializable_types, "Tried to reregister a " + str(some_type)
 	debug_message(f"Registering {some_type} as deserializable")
 	json_decoder.deserializable_types.add(some_type)
 
-def json_read(file_path) :
+def json_read(file_path : FilePath) -> typing.Any :
 	with utf8_reader(file_path) as read_file :
 		read_object = json.load(read_file, cls=json_decoder)
 		assert read_object is not None, "No deserializable object found!"
